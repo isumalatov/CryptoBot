@@ -15,11 +15,14 @@
     "@types/react-dom": "^18.2.17",
     "chart.js": "^4.4.1",
     "chartjs-adapter-moment": "^1.0.1",
+    "jose": "^5.4.1",
+    "mongoose": "^8.4.3",
     "next": "^14.0.3",
     "next-themes": "^0.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-flatpickr": "^3.10.13",
+    "react-toastify": "^10.0.5",
     "typescript": "^5.3.3"
   },
   "devDependencies": {
