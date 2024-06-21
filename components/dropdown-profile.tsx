@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { Menu, Transition } from "@headlessui/react";
 import { logout } from "@/app/actions/auth";
 import { useRouter } from "next/navigation";
-import { getname, getadmin } from "@/app/actions/auth";
-import { userName, userAdmin } from "@/app/lib/definitions";
+import { getname } from "@/app/actions/auth";
+import { userName } from "@/app/lib/definitions";
 import { useEffect, useState } from "react";
 
 export default function DropdownProfile({
@@ -37,22 +36,6 @@ export default function DropdownProfile({
     fetchData();
   }, []);
 
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const { success, message } = await getadmin();
-        if (success) {
-          const { admin } = message as userAdmin;
-          setIsAdmin(admin);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    fetchData();
-  }, []);
 
   return (
     <Menu as="div" className="relative inline-flex">
@@ -85,7 +68,7 @@ export default function DropdownProfile({
             {name}
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400 italic">
-            {isAdmin ? "Administrador" : "Usuario"}
+            Usuario
           </div>
         </div>
         <Menu.Items as="ul" className="focus:outline-none">

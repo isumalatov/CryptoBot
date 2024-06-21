@@ -18,7 +18,6 @@ export async function fetchusers() {
     }
     const usersData: UserData[] = users.map((n) => ({
       id: n._id.toString(),
-      admin: n.admin,
       name: n.name,
       email: n.email,
       password: n.password,
@@ -27,8 +26,6 @@ export async function fetchusers() {
       allowemailprev: n.allowemailprev,
       allowemailcancel: n.allowemailcancel,
       allowemailnew: n.allowemailnew,
-      referral: { id: n.referral.id, name: n.referral.name },
-      referralwallet: n.referralwallet,
     }));
     return { success: true, message: usersData };
   } catch (err) {
@@ -50,7 +47,6 @@ export async function fetchuser() {
     }
     const userData: UserData = {
       id: user._id.toString(),
-      admin: user.admin,
       name: user.name,
       email: user.email,
       password: user.password,
@@ -59,8 +55,6 @@ export async function fetchuser() {
       allowemailprev: user.allowemailprev,
       allowemailcancel: user.allowemailcancel,
       allowemailnew: user.allowemailnew,
-      referral: { id: user.referral.id, name: user.referral.name },
-      referralwallet: user.referralwallet,
     };
     return { success: true, message: userData };
   } catch (err) {
@@ -78,7 +72,6 @@ export async function fetchuserid(id: string) {
     }
     const userData: UserData = {
       id: user._id.toString(),
-      admin: user.admin,
       name: user.name,
       email: user.email,
       password: user.password,
@@ -87,8 +80,6 @@ export async function fetchuserid(id: string) {
       allowemailprev: user.allowemailprev,
       allowemailcancel: user.allowemailcancel,
       allowemailnew: user.allowemailnew,
-      referral: { id: user.referral.id, name: user.referral.name },
-      referralwallet: user.referralwallet,
     };
     return { success: true, message: userData };
   } catch (err) {
@@ -113,7 +104,6 @@ export async function createuser(userData: UserDataCreate) {
         profile = null;
     }
     const user = new User({
-      admin: userData.admin,
       name: userData.name,
       email: userData.email,
       password: userData.password,
@@ -122,13 +112,6 @@ export async function createuser(userData: UserDataCreate) {
       allowemailprev: userData.allowemailprev,
       allowemailcancel: userData.allowemailcancel,
       allowemailnew: userData.allowemailnew,
-      referral: {
-        id: userData.idUser,
-        name: profile
-          ? (profile as { success: boolean; message: UserData }).message.name
-          : "",
-      },
-      referralwallet: userData.referralwallet,
     });
     await user.save();
     return { success: true, message: "Usuario creado" };
@@ -185,7 +168,6 @@ export async function updateuser(id: string, userData: UserDataUpdate) {
     await User.updateOne(
       { _id: id },
       {
-        admin: userData.admin,
         name: userData.name,
         email: userData.email,
         discord: userData.discord,
@@ -193,13 +175,6 @@ export async function updateuser(id: string, userData: UserDataUpdate) {
         allowemailprev: userData.allowemailprev,
         allowemailcancel: userData.allowemailcancel,
         allowemailnew: userData.allowemailnew,
-        referral: {
-          id: userData.idUser,
-          name: profile
-            ? (profile as { success: boolean; message: UserData }).message.name
-            : "",
-        },
-        referralwallet: userData.referralwallet,
       }
     );
     return { success: true, message: "Usuario actualizado" };

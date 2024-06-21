@@ -3,10 +3,7 @@
 import dbConnect from "@/app/lib/dbConnect";
 import User from "@/models/User";
 import { createSession, deleteSession, getSession } from "@/app/lib/session";
-import {
-  ChangePasswordFormData,
-  SignUpReferralFormData,
-} from "@/app/lib/definitions";
+import { ChangePasswordFormData } from "@/app/lib/definitions";
 
 export async function signup(prevState: any, formData: FormData) {
   try {
@@ -69,7 +66,6 @@ export async function signup(prevState: any, formData: FormData) {
     }
 
     const user = new User({
-      admin: false,
       name: name,
       email: email,
       password: password,
@@ -79,93 +75,9 @@ export async function signup(prevState: any, formData: FormData) {
       allowemailcancel: allowemail,
       allowemailnew: allowemail,
       resetpasswordtoken: "",
-      referral: { id: "", name: "" },
-      referralwallet: "",
     });
     await user.save();
-    await createSession(user._id, user.admin, user.name);
-    return { success: true, message: "Cuenta creada correctamente" };
-  } catch (error) {
-    // Handle the error here
-    console.error(error);
-    return { success: false, message: "Error al crear la cuenta" };
-  }
-}
-
-export async function signupreferral(
-  signupreferralData: SignUpReferralFormData
-) {
-  try {
-    await dbConnect();
-
-    const email = signupreferralData.email;
-    const name = signupreferralData.name;
-    const password = signupreferralData.password;
-    const repeatpassword = signupreferralData.repeatpassword;
-    const allowemail = signupreferralData.allowemail;
-    const idUser = signupreferralData.idUser;
-
-    const profile = await User.findOne({ _id: idUser });
-    if (!profile) {
-      return { success: false, message: "Error al cargar datos del usuario" };
-    }
-
-    if (
-      !email ||
-      email.trim() === "" ||
-      !name ||
-      name.trim() === "" ||
-      !password ||
-      password.trim() === "" ||
-      !repeatpassword ||
-      repeatpassword.trim() === ""
-    ) {
-      return { success: false, message: "Rellena todos los campos" };
-    }
-
-    // Comprobar si la contraseña tiene entre 8 y 20 caracteres
-    if (password.length < 8 || password.length > 20) {
-      return {
-        success: false,
-        message: "La contraseña debe tener entre 8 y 20 caracteres",
-      };
-    }
-
-    // Comprobar si el nombre no supera los 20 caracteres
-    if (name.length > 20) {
-      return {
-        success: false,
-        message: "El nombre no puede superar los 20 caracteres",
-      };
-    }
-
-    if (password !== repeatpassword) {
-      return { success: false, message: "Las contraseñas no coinciden" };
-    }
-
-    // comprobar si el email ya está registrado
-    const existingUser = await User.findOne({ email: email });
-
-    if (existingUser) {
-      return { success: false, message: "El email ya está registrado" };
-    }
-
-    const user = new User({
-      admin: false,
-      email: email,
-      name: name,
-      password: password,
-      allowemailprev: allowemail,
-      allowemailcancel: allowemail,
-      allowemailnew: allowemail,
-      discord: "",
-      telegram: "",
-      resetpasswordtoken: "",
-      referral: { id: idUser, name: profile.name },
-      referralwallet: "",
-    });
-    await user.save();
-    await createSession(user._id, user.admin, user.name);
+    await createSession(user._id, user.name);
     return { success: true, message: "Cuenta creada correctamente" };
   } catch (error) {
     // Handle the error here
@@ -193,7 +105,7 @@ export async function signin(prevState: any, formData: FormData) {
     if (password !== user.password) {
       return { success: false, message: "Email o contraseña incorrectos" };
     }
-    await createSession(user._id, user.admin, user.name);
+    await createSession(user._id, user.name);
     return { success: true, message: "Inicio de sesión correcto" };
   } catch (error) {
     // Handle the error here
@@ -226,7 +138,7 @@ export async function resetpassword(
       { _id: user._id },
       { password: password, resetpasswordtoken: "" }
     );
-    await createSession(user._id, user.admin, user.name);
+    await createSession(user._id, user.name);
     return { success: true, message: "Contraseña restablecida correctamente" };
   } catch (error) {
     console.error(error);
@@ -273,22 +185,6 @@ export async function changepassword(
   } catch (error) {
     console.error(error);
     return { success: false, message: "Error al actualizar la contraseña" };
-  }
-}
-
-export async function getadmin() {
-  try {
-    const session = await getSession();
-    if (!session) {
-      return { success: false, message: "Error al cargar datos del usuario" };
-    }
-    const isAdmin = {
-      admin: session.admin,
-    };
-    return { success: true, message: isAdmin };
-  } catch (error) {
-    console.error(error);
-    return { success: false, message: "Error al cargar datos del usuario" };
   }
 }
 

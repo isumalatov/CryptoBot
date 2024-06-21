@@ -5,19 +5,7 @@ import { cookies } from "next/headers";
 // 1. Specify protected and public routes
 const protectedRoutes = [
   "/dashboard",
-  "/investments",
-  "/referrals",
-  "/settings",
-  "/settings/account",
-  "/settings/help",
-  "/settings/notifications",
   "/not-found",
-  "/admin",
-  "/admin/helps",
-  "/admin/notices",
-  "/admin/presales",
-  "/admin/users",
-  "/admin/payreferrals",
 ];
 const publicRoutes = ["/signin", "/signup", "/reset-password"];
 
@@ -31,18 +19,12 @@ export default async function middleware(req: NextRequest) {
   const cookie = cookies().get("session")?.value;
   const session = await decrypt(cookie);
 
-  // 4. Check if the user is an admin
-  const isAdmin = session?.admin;
-
-  // 5. Redirect to  if the user is not authenticated or if the user is trying to access an admin route but is not an admin
-  if (
-    (isProtectedRoute && !session?.userId) ||
-    (path.startsWith("/admin") && !isAdmin)
-  ) {
+  // 4. Redirect to  if the user is not authenticated
+  if (isProtectedRoute && !session?.userId) {
     return NextResponse.redirect(new URL("/signin", req.nextUrl));
   }
 
-  // 6. Redirect to /dashboard if the user is authenticated
+  // 5. Redirect to /dashboard if the user is authenticated
   if (
     isPublicRoute &&
     session?.userId &&
