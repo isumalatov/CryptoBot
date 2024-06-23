@@ -1,7 +1,11 @@
-export const metadata = {
+"use client"
+
+import { getTokenOverview, tokensMap, getTokenOwner, getTokenPurchasesAndSales, getTraderInToken } from '@/app/actions/birdeye'
+
+/*export const metadata = {
   title: 'Dashboard',
   description: 'Page description',
-}
+}*/
 
 import WelcomeBanner from './welcome-banner'
 
@@ -12,6 +16,10 @@ export default function Dashboard() {
         title="¡Bienvenido a CryptoBot! 👋"
         subtitle="AQUI PONEMOS ALGO MAS:"
       />
-    </div>
+      <button onClick={() => getTokenOverview(tokensMap['MEW'])}>Get Token Overview</button>
+      <button onClick={() => getTokenOwner(tokensMap['MEW'])}>Get Token Creation Info</button>
+      <button onClick={() => getTokenPurchasesAndSales(tokensMap['MEW'])}>Get Token Trades</button>
+      <button onClick={() => getTraderInToken('3ACp4T3ptTdayzWryEhT65NKZSKLjwXviBjWEy54aFdW', tokensMap['MEW'])}>Get Trader In Token</button>
+    </div>    
   )
 }
